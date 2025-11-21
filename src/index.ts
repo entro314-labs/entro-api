@@ -1,0 +1,203 @@
+import { ApiClient, type ClientConfig } from './client';
+import {
+  createEventsEndpoints,
+  createLinksEndpoints,
+  createMeEndpoints,
+  createOrgsEndpoints,
+  createPixelsEndpoints,
+  createReportsEndpoints,
+  createSegmentsEndpoints,
+  createSessionsEndpoints,
+  createUsersEndpoints,
+  createWebsitesEndpoints,
+} from './endpoints';
+
+export type { ClientConfig } from './client';
+export * from './types';
+
+/**
+ * Entrolytics API client with all endpoints.
+ */
+export interface EntrolyticsClient {
+  // Me endpoints
+  getMe: ReturnType<typeof createMeEndpoints>['getMe'];
+  updateMyPassword: ReturnType<typeof createMeEndpoints>['updateMyPassword'];
+  getMyWebsites: ReturnType<typeof createMeEndpoints>['getMyWebsites'];
+  getMyOrgs: ReturnType<typeof createMeEndpoints>['getMyOrgs'];
+
+  // User endpoints
+  getUsers: ReturnType<typeof createUsersEndpoints>['getUsers'];
+  createUser: ReturnType<typeof createUsersEndpoints>['createUser'];
+  getUser: ReturnType<typeof createUsersEndpoints>['getUser'];
+  updateUser: ReturnType<typeof createUsersEndpoints>['updateUser'];
+  deleteUser: ReturnType<typeof createUsersEndpoints>['deleteUser'];
+  getUserWebsites: ReturnType<typeof createUsersEndpoints>['getUserWebsites'];
+  getUserUsage: ReturnType<typeof createUsersEndpoints>['getUserUsage'];
+
+  // Organization endpoints
+  getOrgs: ReturnType<typeof createOrgsEndpoints>['getOrgs'];
+  createOrg: ReturnType<typeof createOrgsEndpoints>['createOrg'];
+  joinOrg: ReturnType<typeof createOrgsEndpoints>['joinOrg'];
+  getOrg: ReturnType<typeof createOrgsEndpoints>['getOrg'];
+  updateOrg: ReturnType<typeof createOrgsEndpoints>['updateOrg'];
+  deleteOrg: ReturnType<typeof createOrgsEndpoints>['deleteOrg'];
+  getOrgUsers: ReturnType<typeof createOrgsEndpoints>['getOrgUsers'];
+  addOrgUser: ReturnType<typeof createOrgsEndpoints>['addOrgUser'];
+  updateOrgUser: ReturnType<typeof createOrgsEndpoints>['updateOrgUser'];
+  removeOrgUser: ReturnType<typeof createOrgsEndpoints>['removeOrgUser'];
+  getOrgWebsites: ReturnType<typeof createOrgsEndpoints>['getOrgWebsites'];
+  addOrgWebsite: ReturnType<typeof createOrgsEndpoints>['addOrgWebsite'];
+  removeOrgWebsite: ReturnType<typeof createOrgsEndpoints>['removeOrgWebsite'];
+
+  // Website endpoints
+  getWebsites: ReturnType<typeof createWebsitesEndpoints>['getWebsites'];
+  createWebsite: ReturnType<typeof createWebsitesEndpoints>['createWebsite'];
+  getWebsite: ReturnType<typeof createWebsitesEndpoints>['getWebsite'];
+  updateWebsite: ReturnType<typeof createWebsitesEndpoints>['updateWebsite'];
+  deleteWebsite: ReturnType<typeof createWebsitesEndpoints>['deleteWebsite'];
+  resetWebsite: ReturnType<typeof createWebsitesEndpoints>['resetWebsite'];
+  transferWebsite: ReturnType<typeof createWebsitesEndpoints>['transferWebsite'];
+  getWebsiteStats: ReturnType<typeof createWebsitesEndpoints>['getWebsiteStats'];
+  getWebsitePageviews: ReturnType<typeof createWebsitesEndpoints>['getWebsitePageviews'];
+  getWebsiteMetrics: ReturnType<typeof createWebsitesEndpoints>['getWebsiteMetrics'];
+  getWebsiteExpandedMetrics: ReturnType<typeof createWebsitesEndpoints>['getWebsiteExpandedMetrics'];
+  getWebsiteEvents: ReturnType<typeof createWebsitesEndpoints>['getWebsiteEvents'];
+  getWebsiteEventsSeries: ReturnType<typeof createWebsitesEndpoints>['getWebsiteEventsSeries'];
+  getWebsiteActive: ReturnType<typeof createWebsitesEndpoints>['getWebsiteActive'];
+  getWebsiteDateRange: ReturnType<typeof createWebsitesEndpoints>['getWebsiteDateRange'];
+  getWebsiteValues: ReturnType<typeof createWebsitesEndpoints>['getWebsiteValues'];
+  getRealtimeData: ReturnType<typeof createWebsitesEndpoints>['getRealtimeData'];
+  exportWebsiteData: ReturnType<typeof createWebsitesEndpoints>['exportWebsiteData'];
+
+  // Session endpoints
+  getWebsiteSessions: ReturnType<typeof createSessionsEndpoints>['getWebsiteSessions'];
+  getWebsiteSessionStats: ReturnType<typeof createSessionsEndpoints>['getWebsiteSessionStats'];
+  getWeeklyTraffic: ReturnType<typeof createSessionsEndpoints>['getWeeklyTraffic'];
+  getSession: ReturnType<typeof createSessionsEndpoints>['getSession'];
+  getSessionActivity: ReturnType<typeof createSessionsEndpoints>['getSessionActivity'];
+  getSessionProperties: ReturnType<typeof createSessionsEndpoints>['getSessionProperties'];
+
+  // Event data endpoints
+  getEventDataStats: ReturnType<typeof createEventsEndpoints>['getEventDataStats'];
+  getEventDataEvents: ReturnType<typeof createEventsEndpoints>['getEventDataEvents'];
+  getEventDataFields: ReturnType<typeof createEventsEndpoints>['getEventDataFields'];
+  getEventDataValues: ReturnType<typeof createEventsEndpoints>['getEventDataValues'];
+  getEventDataProperties: ReturnType<typeof createEventsEndpoints>['getEventDataProperties'];
+  getEventData: ReturnType<typeof createEventsEndpoints>['getEventData'];
+  getSessionDataProperties: ReturnType<typeof createEventsEndpoints>['getSessionDataProperties'];
+  getSessionDataValues: ReturnType<typeof createEventsEndpoints>['getSessionDataValues'];
+
+  // Report endpoints
+  getReports: ReturnType<typeof createReportsEndpoints>['getReports'];
+  createReport: ReturnType<typeof createReportsEndpoints>['createReport'];
+  getReport: ReturnType<typeof createReportsEndpoints>['getReport'];
+  updateReport: ReturnType<typeof createReportsEndpoints>['updateReport'];
+  deleteReport: ReturnType<typeof createReportsEndpoints>['deleteReport'];
+  runFunnelReport: ReturnType<typeof createReportsEndpoints>['runFunnelReport'];
+  runRetentionReport: ReturnType<typeof createReportsEndpoints>['runRetentionReport'];
+  runJourneyReport: ReturnType<typeof createReportsEndpoints>['runJourneyReport'];
+  runGoalReport: ReturnType<typeof createReportsEndpoints>['runGoalReport'];
+  runAttributionReport: ReturnType<typeof createReportsEndpoints>['runAttributionReport'];
+  runRevenueReport: ReturnType<typeof createReportsEndpoints>['runRevenueReport'];
+  runUTMReport: ReturnType<typeof createReportsEndpoints>['runUTMReport'];
+  runBreakdownReport: ReturnType<typeof createReportsEndpoints>['runBreakdownReport'];
+
+  // Segment endpoints
+  getSegments: ReturnType<typeof createSegmentsEndpoints>['getSegments'];
+  createSegment: ReturnType<typeof createSegmentsEndpoints>['createSegment'];
+  getSegment: ReturnType<typeof createSegmentsEndpoints>['getSegment'];
+  updateSegment: ReturnType<typeof createSegmentsEndpoints>['updateSegment'];
+  deleteSegment: ReturnType<typeof createSegmentsEndpoints>['deleteSegment'];
+
+  // Link endpoints
+  getLinks: ReturnType<typeof createLinksEndpoints>['getLinks'];
+  getOrgLinks: ReturnType<typeof createLinksEndpoints>['getOrgLinks'];
+  createLink: ReturnType<typeof createLinksEndpoints>['createLink'];
+  getLink: ReturnType<typeof createLinksEndpoints>['getLink'];
+  updateLink: ReturnType<typeof createLinksEndpoints>['updateLink'];
+  deleteLink: ReturnType<typeof createLinksEndpoints>['deleteLink'];
+
+  // Pixel endpoints
+  getPixels: ReturnType<typeof createPixelsEndpoints>['getPixels'];
+  getOrgPixels: ReturnType<typeof createPixelsEndpoints>['getOrgPixels'];
+  createPixel: ReturnType<typeof createPixelsEndpoints>['createPixel'];
+  getPixel: ReturnType<typeof createPixelsEndpoints>['getPixel'];
+  updatePixel: ReturnType<typeof createPixelsEndpoints>['updatePixel'];
+  deletePixel: ReturnType<typeof createPixelsEndpoints>['deletePixel'];
+}
+
+/**
+ * Create an Entrolytics API client.
+ *
+ * @example
+ * ```ts
+ * // Using environment variables
+ * const client = getClient();
+ *
+ * // With explicit configuration
+ * const client = getClient({
+ *   endpoint: 'https://analytics.example.com/api',
+ *   apiKey: 'your-api-key',
+ * });
+ *
+ * // Make API calls
+ * const { ok, data, error } = await client.getWebsites();
+ * ```
+ */
+export function getClient(config?: ClientConfig): EntrolyticsClient {
+  const apiClient = new ApiClient(config);
+
+  const me = createMeEndpoints(apiClient);
+  const users = createUsersEndpoints(apiClient);
+  const orgs = createOrgsEndpoints(apiClient);
+  const websites = createWebsitesEndpoints(apiClient);
+  const sessions = createSessionsEndpoints(apiClient);
+  const events = createEventsEndpoints(apiClient);
+  const reports = createReportsEndpoints(apiClient);
+  const segments = createSegmentsEndpoints(apiClient);
+  const links = createLinksEndpoints(apiClient);
+  const pixels = createPixelsEndpoints(apiClient);
+
+  return {
+    // Me
+    ...me,
+    // Users
+    ...users,
+    // Organizations
+    ...orgs,
+    // Websites
+    ...websites,
+    // Sessions
+    ...sessions,
+    // Events
+    ...events,
+    // Reports
+    ...reports,
+    // Segments
+    ...segments,
+    // Links
+    ...links,
+    // Pixels
+    ...pixels,
+  };
+}
+
+// Also export individual endpoint creators for advanced usage
+export {
+  createEventsEndpoints,
+  createLinksEndpoints,
+  createMeEndpoints,
+  createOrgsEndpoints,
+  createPixelsEndpoints,
+  createReportsEndpoints,
+  createSegmentsEndpoints,
+  createSessionsEndpoints,
+  createUsersEndpoints,
+  createWebsitesEndpoints,
+};
+
+// Export the base client for custom implementations
+export { ApiClient };
+
+// Default export for convenience
+export default getClient;

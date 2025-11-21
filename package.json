@@ -1,0 +1,53 @@
+{
+  "name": "@entro314labs/entro-api",
+  "version": "1.0.0",
+  "description": "API client for Entrolytics analytics platform",
+  "author": "Entrolytics <hey@entrolytics.click>",
+  "license": "MIT",
+  "homepage": "https://entrolytics.click",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/entro314-labs/entro-api.git"
+  },
+  "keywords": [
+    "analytics",
+    "api-client",
+    "entrolytics",
+    "web-analytics",
+    "typescript"
+  ],
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "lint": "biome check --write .",
+    "lint:check": "biome check .",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.7",
+    "@types/node": "^24.10.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22.x"
+  }
+}
