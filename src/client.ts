@@ -3,14 +3,20 @@ import type { ApiResponse } from './types';
 export interface ClientConfig {
   /** API endpoint URL (e.g., 'https://analytics.example.com/api') */
   endpoint?: string;
-  /** API key for cloud authentication */
+  /** Bearer token for Clerk-authenticated requests */
+  bearerToken?: string;
+  /** API key for programmatic access */
   apiKey?: string;
-  /** User ID for self-hosted authentication */
+  /** User ID for self-hosted authentication (legacy) */
   userId?: string;
-  /** Secret for self-hosted authentication (matches APP_SECRET) */
+  /** Secret for self-hosted authentication (legacy) */
   secret?: string;
   /** Custom fetch implementation */
   fetch?: typeof fetch;
+  /** Number of retry attempts for failed requests (default: 3) */
+  retries?: number;
+  /** Base delay between retries in ms (default: 1000) */
+  retryDelay?: number;
 }
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -27,36 +33,53 @@ interface RequestOptions {
  */
 export class ApiClient {
   private endpoint: string;
+  private bearerToken?: string;
   private apiKey?: string;
   private userId?: string;
   private secret?: string;
   private fetchFn: typeof fetch;
+  private retries: number;
+  private retryDelay: number;
 
   constructor(config: ClientConfig = {}) {
     this.endpoint = config.endpoint || process.env.ENTROLYTICS_API_ENDPOINT || '';
+    this.bearerToken = config.bearerToken || process.env.ENTROLYTICS_BEARER_TOKEN;
     this.apiKey = config.apiKey || process.env.ENTROLYTICS_API_KEY;
     this.userId = config.userId || process.env.ENTROLYTICS_USER_ID;
     this.secret = config.secret || process.env.ENTROLYTICS_SECRET;
     this.fetchFn = config.fetch || globalThis.fetch;
+    this.retries = config.retries ?? 3;
+    this.retryDelay = config.retryDelay ?? 1000;
 
     if (!this.endpoint) {
       throw new Error(
-        'Entrolytics API endpoint is required. Set ENTROLYTICS_API_ENDPOINT or pass endpoint in config.'
+        'Entrolytics API endpoint is required. Set ENTROLYTICS_API_ENDPOINT or pass endpoint in config.',
       );
     }
   }
 
   /**
+   * Update the bearer token (useful for token refresh).
+   */
+  setBearerToken(token: string): void {
+    this.bearerToken = token;
+  }
+
+  /**
    * Generate authentication headers.
+   * Priority: Bearer token > API key > Legacy share token
    */
   private getAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = {};
 
-    if (this.apiKey) {
-      // Cloud authentication
+    if (this.bearerToken) {
+      // Clerk JWT Bearer token authentication
+      headers.Authorization = `Bearer ${this.bearerToken}`;
+    } else if (this.apiKey) {
+      // API key authentication
       headers['x-entrolytics-api-key'] = this.apiKey;
     } else if (this.userId && this.secret) {
-      // Self-hosted authentication using share token format
+      // Legacy self-hosted authentication
       headers['x-entrolytics-share-token'] = this.createShareToken();
     }
 
@@ -64,14 +87,16 @@ export class ApiClient {
   }
 
   /**
-   * Create a share token for self-hosted authentication.
+   * Create a share token for self-hosted authentication (legacy).
+   * @deprecated Use bearerToken or apiKey instead
    */
   private createShareToken(): string {
     if (!this.userId || !this.secret) {
       throw new Error('userId and secret are required for self-hosted authentication');
     }
 
-    // Create a simple token (in production, this would be a proper JWT)
+    // Simple base64 token for backwards compatibility
+    // New integrations should use bearerToken or apiKey
     const payload = {
       userId: this.userId,
       timestamp: Date.now(),
@@ -81,9 +106,26 @@ export class ApiClient {
   }
 
   /**
+   * Sleep helper for retry delays.
+   */
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Check if error is retryable.
+   */
+  private isRetryable(status: number): boolean {
+    return status === 0 || status === 429 || status >= 500;
+  }
+
+  /**
    * Build URL with query parameters.
    */
-  private buildUrl(path: string, params?: Record<string, string | number | boolean | undefined>): string {
+  private buildUrl(
+    path: string,
+    params?: Record<string, string | number | boolean | undefined>,
+  ): string {
     const url = new URL(path, this.endpoint);
 
     if (params) {
@@ -98,60 +140,93 @@ export class ApiClient {
   }
 
   /**
-   * Make an authenticated API request.
+   * Make an authenticated API request with automatic retries.
    */
   async request<T>(path: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
     const { method = 'GET', body, params, headers = {} } = options;
 
     const url = this.buildUrl(path, params);
+    let lastError: ApiResponse<T> | null = null;
 
-    try {
-      const fetchOptions: RequestInit = {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          ...this.getAuthHeaders(),
-          ...headers,
-        },
-      };
-
-      if (body) {
-        fetchOptions.body = JSON.stringify(body);
-      }
-
-      const response = await this.fetchFn(url, fetchOptions);
-
-      const data = await response.json().catch(() => ({})) as Record<string, unknown>;
-
-      if (!response.ok) {
-        const errorMessage = typeof data.error === 'string' ? data.error
-          : typeof data.message === 'string' ? data.message
-          : `HTTP ${response.status}`;
-        return {
-          ok: false,
-          status: response.status,
-          error: errorMessage,
+    for (let attempt = 0; attempt <= this.retries; attempt++) {
+      try {
+        const fetchOptions: RequestInit = {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            ...this.getAuthHeaders(),
+            ...headers,
+          },
         };
-      }
 
-      return {
-        ok: true,
-        status: response.status,
-        data: data as T,
-      };
-    } catch (error) {
-      return {
+        if (body) {
+          fetchOptions.body = JSON.stringify(body);
+        }
+
+        const response = await this.fetchFn(url, fetchOptions);
+
+        const data = (await response.json().catch(() => ({}))) as Record<string, unknown>;
+
+        if (!response.ok) {
+          const errorMessage =
+            typeof data.error === 'string'
+              ? data.error
+              : typeof data.message === 'string'
+                ? data.message
+                : `HTTP ${response.status}`;
+
+          lastError = {
+            ok: false,
+            status: response.status,
+            error: errorMessage,
+          };
+
+          // Retry on 5xx errors and rate limits
+          if (this.isRetryable(response.status) && attempt < this.retries) {
+            const delay = this.retryDelay * 2 ** attempt;
+            await this.sleep(delay);
+            continue;
+          }
+
+          return lastError;
+        }
+
+        return {
+          ok: true,
+          status: response.status,
+          data: data as T,
+        };
+      } catch (error) {
+        lastError = {
+          ok: false,
+          status: 0,
+          error: error instanceof Error ? error.message : 'Network error',
+        };
+
+        // Retry on network errors
+        if (attempt < this.retries) {
+          const delay = this.retryDelay * 2 ** attempt;
+          await this.sleep(delay);
+        }
+      }
+    }
+
+    return (
+      lastError ?? {
         ok: false,
         status: 0,
-        error: error instanceof Error ? error.message : 'Network error',
-      };
-    }
+        error: 'Request failed after retries',
+      }
+    );
   }
 
   /**
    * GET request helper.
    */
-  get<T>(path: string, params?: Record<string, string | number | boolean | undefined>): Promise<ApiResponse<T>> {
+  get<T>(
+    path: string,
+    params?: Record<string, string | number | boolean | undefined>,
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(path, { method: 'GET', params });
   }
 

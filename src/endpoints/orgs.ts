@@ -65,7 +65,7 @@ export function createOrgsEndpoints(client: ApiClient) {
      */
     addOrgUser(
       orgId: string,
-      data: { userId: string; role: 'admin' | 'member' | 'view-only' }
+      data: { userId: string; role: 'admin' | 'member' | 'view-only' },
     ): Promise<ApiResponse<OrgUser>> {
       return client.post<OrgUser>(`/orgs/${orgId}/users`, data);
     },
@@ -76,7 +76,7 @@ export function createOrgsEndpoints(client: ApiClient) {
     updateOrgUser(
       orgId: string,
       userId: string,
-      data: { role: 'admin' | 'member' | 'view-only' }
+      data: { role: 'admin' | 'member' | 'view-only' },
     ): Promise<ApiResponse<OrgUser>> {
       return client.post<OrgUser>(`/orgs/${orgId}/users/${userId}`, data);
     },

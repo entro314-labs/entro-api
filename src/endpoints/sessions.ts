@@ -14,7 +14,7 @@ export function createSessionsEndpoints(client: ApiClient) {
      */
     getWebsiteSessions(
       websiteId: string,
-      params: DateRangeParams & { query?: string; limit?: number; offset?: number }
+      params: DateRangeParams & { query?: string; limit?: number; offset?: number },
     ): Promise<ApiResponse<Session[]>> {
       return client.get<Session[]>(`/websites/${websiteId}/sessions`, params);
     },
@@ -24,7 +24,7 @@ export function createSessionsEndpoints(client: ApiClient) {
      */
     getWebsiteSessionStats(
       websiteId: string,
-      params: DateRangeParams
+      params: DateRangeParams,
     ): Promise<ApiResponse<SessionStats>> {
       return client.get<SessionStats>(`/websites/${websiteId}/sessions/stats`, params);
     },
@@ -34,7 +34,7 @@ export function createSessionsEndpoints(client: ApiClient) {
      */
     getWeeklyTraffic(
       websiteId: string,
-      params: DateRangeParams & { timezone?: string }
+      params: DateRangeParams & { timezone?: string },
     ): Promise<ApiResponse<{ day: number; hour: number; y: number }[]>> {
       return client.get(`/websites/${websiteId}/sessions/weekly`, params);
     },
@@ -52,11 +52,11 @@ export function createSessionsEndpoints(client: ApiClient) {
     getSessionActivity(
       websiteId: string,
       sessionId: string,
-      params: DateRangeParams
+      params: DateRangeParams,
     ): Promise<ApiResponse<SessionActivity[]>> {
       return client.get<SessionActivity[]>(
         `/websites/${websiteId}/sessions/${sessionId}/activity`,
-        params
+        params,
       );
     },
 
@@ -65,7 +65,7 @@ export function createSessionsEndpoints(client: ApiClient) {
      */
     getSessionProperties(
       websiteId: string,
-      sessionId: string
+      sessionId: string,
     ): Promise<ApiResponse<Record<string, string | number | boolean>[]>> {
       return client.get(`/websites/${websiteId}/sessions/${sessionId}/properties`);
     },

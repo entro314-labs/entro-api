@@ -63,7 +63,7 @@ export function createWebsitesEndpoints(client: ApiClient) {
      */
     transferWebsite(
       websiteId: string,
-      data: { userId?: string; orgId?: string }
+      data: { userId?: string; orgId?: string },
     ): Promise<ApiResponse<Website>> {
       return client.post<Website>(`/websites/${websiteId}/transfer`, data);
     },
@@ -73,7 +73,7 @@ export function createWebsitesEndpoints(client: ApiClient) {
      */
     getWebsiteStats(
       websiteId: string,
-      params: DateRangeParams
+      params: DateRangeParams,
     ): Promise<ApiResponse<WebsiteStats>> {
       return client.get<WebsiteStats>(`/websites/${websiteId}/stats`, params);
     },
@@ -83,7 +83,7 @@ export function createWebsitesEndpoints(client: ApiClient) {
      */
     getWebsitePageviews(
       websiteId: string,
-      params: DateRangeParams & { unit?: string; timezone?: string }
+      params: DateRangeParams & { unit?: string; timezone?: string },
     ): Promise<ApiResponse<WebsitePageviews>> {
       return client.get<WebsitePageviews>(`/websites/${websiteId}/pageviews`, params);
     },
@@ -93,7 +93,7 @@ export function createWebsitesEndpoints(client: ApiClient) {
      */
     getWebsiteMetrics(
       websiteId: string,
-      params: WebsiteMetricsParams
+      params: WebsiteMetricsParams,
     ): Promise<ApiResponse<MetricData[]>> {
       return client.get<MetricData[]>(`/websites/${websiteId}/metrics`, params);
     },
@@ -103,7 +103,7 @@ export function createWebsitesEndpoints(client: ApiClient) {
      */
     getWebsiteExpandedMetrics(
       websiteId: string,
-      params: WebsiteMetricsParams
+      params: WebsiteMetricsParams,
     ): Promise<ApiResponse<MetricData[]>> {
       return client.get<MetricData[]>(`/websites/${websiteId}/metrics/expanded`, params);
     },
@@ -113,7 +113,7 @@ export function createWebsitesEndpoints(client: ApiClient) {
      */
     getWebsiteEvents(
       websiteId: string,
-      params: DateRangeParams & { query?: string; limit?: number; offset?: number }
+      params: DateRangeParams & { query?: string; limit?: number; offset?: number },
     ): Promise<ApiResponse<WebsiteEvent[]>> {
       return client.get<WebsiteEvent[]>(`/websites/${websiteId}/events`, params);
     },
@@ -123,7 +123,7 @@ export function createWebsitesEndpoints(client: ApiClient) {
      */
     getWebsiteEventsSeries(
       websiteId: string,
-      params: DateRangeParams & { unit?: string; timezone?: string; event?: string }
+      params: DateRangeParams & { unit?: string; timezone?: string; event?: string },
     ): Promise<ApiResponse<{ x: string; y: number }[]>> {
       return client.get(`/websites/${websiteId}/events/series`, params);
     },
@@ -138,7 +138,9 @@ export function createWebsitesEndpoints(client: ApiClient) {
     /**
      * Get website date range (first and last event dates).
      */
-    getWebsiteDateRange(websiteId: string): Promise<ApiResponse<{ minDate: string; maxDate: string }>> {
+    getWebsiteDateRange(
+      websiteId: string,
+    ): Promise<ApiResponse<{ minDate: string; maxDate: string }>> {
       return client.get(`/websites/${websiteId}/daterange`);
     },
 
@@ -147,7 +149,7 @@ export function createWebsitesEndpoints(client: ApiClient) {
      */
     getWebsiteValues(
       websiteId: string,
-      params: DateRangeParams & { type: string }
+      params: DateRangeParams & { type: string },
     ): Promise<ApiResponse<string[]>> {
       return client.get<string[]>(`/websites/${websiteId}/values`, params);
     },
@@ -164,7 +166,7 @@ export function createWebsitesEndpoints(client: ApiClient) {
      */
     exportWebsiteData(
       websiteId: string,
-      params: DateRangeParams & { type: 'csv' | 'json' }
+      params: DateRangeParams & { type: 'csv' | 'json' },
     ): Promise<ApiResponse<string>> {
       return client.get<string>(`/websites/${websiteId}/export`, params);
     },

@@ -1,5 +1,6 @@
 import { ApiClient, type ClientConfig } from './client';
 import {
+  createBoardsEndpoints,
   createEventsEndpoints,
   createLinksEndpoints,
   createMeEndpoints,
@@ -60,7 +61,9 @@ export interface EntrolyticsClient {
   getWebsiteStats: ReturnType<typeof createWebsitesEndpoints>['getWebsiteStats'];
   getWebsitePageviews: ReturnType<typeof createWebsitesEndpoints>['getWebsitePageviews'];
   getWebsiteMetrics: ReturnType<typeof createWebsitesEndpoints>['getWebsiteMetrics'];
-  getWebsiteExpandedMetrics: ReturnType<typeof createWebsitesEndpoints>['getWebsiteExpandedMetrics'];
+  getWebsiteExpandedMetrics: ReturnType<
+    typeof createWebsitesEndpoints
+  >['getWebsiteExpandedMetrics'];
   getWebsiteEvents: ReturnType<typeof createWebsitesEndpoints>['getWebsiteEvents'];
   getWebsiteEventsSeries: ReturnType<typeof createWebsitesEndpoints>['getWebsiteEventsSeries'];
   getWebsiteActive: ReturnType<typeof createWebsitesEndpoints>['getWebsiteActive'];
@@ -124,6 +127,18 @@ export interface EntrolyticsClient {
   getPixel: ReturnType<typeof createPixelsEndpoints>['getPixel'];
   updatePixel: ReturnType<typeof createPixelsEndpoints>['updatePixel'];
   deletePixel: ReturnType<typeof createPixelsEndpoints>['deletePixel'];
+
+  // Board endpoints (Custom Dashboards)
+  getBoards: ReturnType<typeof createBoardsEndpoints>['getBoards'];
+  getBoard: ReturnType<typeof createBoardsEndpoints>['getBoard'];
+  createBoard: ReturnType<typeof createBoardsEndpoints>['createBoard'];
+  updateBoard: ReturnType<typeof createBoardsEndpoints>['updateBoard'];
+  deleteBoard: ReturnType<typeof createBoardsEndpoints>['deleteBoard'];
+  getBoardWidgets: ReturnType<typeof createBoardsEndpoints>['getBoardWidgets'];
+  getBoardWidget: ReturnType<typeof createBoardsEndpoints>['getBoardWidget'];
+  createBoardWidget: ReturnType<typeof createBoardsEndpoints>['createBoardWidget'];
+  updateBoardWidget: ReturnType<typeof createBoardsEndpoints>['updateBoardWidget'];
+  deleteBoardWidget: ReturnType<typeof createBoardsEndpoints>['deleteBoardWidget'];
 }
 
 /**
@@ -157,6 +172,7 @@ export function getClient(config?: ClientConfig): EntrolyticsClient {
   const segments = createSegmentsEndpoints(apiClient);
   const links = createLinksEndpoints(apiClient);
   const pixels = createPixelsEndpoints(apiClient);
+  const boards = createBoardsEndpoints(apiClient);
 
   return {
     // Me
@@ -179,11 +195,14 @@ export function getClient(config?: ClientConfig): EntrolyticsClient {
     ...links,
     // Pixels
     ...pixels,
+    // Boards
+    ...boards,
   };
 }
 
 // Also export individual endpoint creators for advanced usage
 export {
+  createBoardsEndpoints,
   createEventsEndpoints,
   createLinksEndpoints,
   createMeEndpoints,

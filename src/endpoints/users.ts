@@ -50,7 +50,7 @@ export function createUsersEndpoints(client: ApiClient) {
      */
     getUserUsage(
       userId: string,
-      params: { startAt: number; endAt: number }
+      params: { startAt: number; endAt: number },
     ): Promise<ApiResponse<{ websiteCount: number; eventCount: number }>> {
       return client.get(`/users/${userId}/usage`, params);
     },

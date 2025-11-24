@@ -30,7 +30,7 @@ export function createSegmentsEndpoints(client: ApiClient) {
     updateSegment(
       websiteId: string,
       segmentId: string,
-      data: UpdateSegmentData
+      data: UpdateSegmentData,
     ): Promise<ApiResponse<Segment>> {
       return client.post<Segment>(`/websites/${websiteId}/segments/${segmentId}`, data);
     },

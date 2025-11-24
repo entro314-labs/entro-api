@@ -1,11 +1,5 @@
 import type { ApiClient } from '../client';
-import type {
-  ApiResponse,
-  DateRangeParams,
-  EventData,
-  EventDataField,
-  EventStats,
-} from '../types';
+import type { ApiResponse, DateRangeParams, EventData, EventDataField, EventStats } from '../types';
 
 export function createEventsEndpoints(client: ApiClient) {
   return {
@@ -14,7 +8,7 @@ export function createEventsEndpoints(client: ApiClient) {
      */
     getEventDataStats(
       websiteId: string,
-      params: DateRangeParams
+      params: DateRangeParams,
     ): Promise<ApiResponse<EventStats>> {
       return client.get<EventStats>(`/websites/${websiteId}/event-data/stats`, params);
     },
@@ -24,7 +18,7 @@ export function createEventsEndpoints(client: ApiClient) {
      */
     getEventDataEvents(
       websiteId: string,
-      params: DateRangeParams
+      params: DateRangeParams,
     ): Promise<ApiResponse<{ eventName: string; total: number }[]>> {
       return client.get(`/websites/${websiteId}/event-data/events`, params);
     },
@@ -34,7 +28,7 @@ export function createEventsEndpoints(client: ApiClient) {
      */
     getEventDataFields(
       websiteId: string,
-      params: DateRangeParams & { eventName: string }
+      params: DateRangeParams & { eventName: string },
     ): Promise<ApiResponse<EventDataField[]>> {
       return client.get<EventDataField[]>(`/websites/${websiteId}/event-data/fields`, params);
     },
@@ -44,7 +38,7 @@ export function createEventsEndpoints(client: ApiClient) {
      */
     getEventDataValues(
       websiteId: string,
-      params: DateRangeParams & { eventName: string; fieldName: string }
+      params: DateRangeParams & { eventName: string; fieldName: string },
     ): Promise<ApiResponse<{ fieldValue: string; total: number }[]>> {
       return client.get(`/websites/${websiteId}/event-data/values`, params);
     },
@@ -54,7 +48,7 @@ export function createEventsEndpoints(client: ApiClient) {
      */
     getEventDataProperties(
       websiteId: string,
-      params: DateRangeParams & { eventName?: string }
+      params: DateRangeParams & { eventName?: string },
     ): Promise<ApiResponse<EventData[]>> {
       return client.get<EventData[]>(`/websites/${websiteId}/event-data/properties`, params);
     },
@@ -64,7 +58,7 @@ export function createEventsEndpoints(client: ApiClient) {
      */
     getEventData(
       websiteId: string,
-      eventId: string
+      eventId: string,
     ): Promise<ApiResponse<Record<string, unknown>>> {
       return client.get(`/websites/${websiteId}/event-data/${eventId}`);
     },
@@ -74,7 +68,7 @@ export function createEventsEndpoints(client: ApiClient) {
      */
     getSessionDataProperties(
       websiteId: string,
-      params: DateRangeParams
+      params: DateRangeParams,
     ): Promise<ApiResponse<{ propertyName: string; total: number }[]>> {
       return client.get(`/websites/${websiteId}/session-data/properties`, params);
     },
@@ -84,7 +78,7 @@ export function createEventsEndpoints(client: ApiClient) {
      */
     getSessionDataValues(
       websiteId: string,
-      params: DateRangeParams & { propertyName: string }
+      params: DateRangeParams & { propertyName: string },
     ): Promise<ApiResponse<{ propertyValue: string; total: number }[]>> {
       return client.get(`/websites/${websiteId}/session-data/values`, params);
     },

@@ -119,7 +119,7 @@ export function createReportsEndpoints(client: ApiClient) {
         websiteId: string;
         urls: string[];
         window?: number;
-      }
+      },
     ): Promise<ApiResponse<FunnelResult[]>> {
       return client.post<FunnelResult[]>('/reports/funnel', params);
     },
@@ -131,7 +131,7 @@ export function createReportsEndpoints(client: ApiClient) {
       params: DateRangeParams & {
         websiteId: string;
         cohortSize?: 'day' | 'week' | 'month';
-      }
+      },
     ): Promise<ApiResponse<RetentionResult[]>> {
       return client.post<RetentionResult[]>('/reports/retention', params);
     },
@@ -143,7 +143,7 @@ export function createReportsEndpoints(client: ApiClient) {
       params: DateRangeParams & {
         websiteId: string;
         steps?: number;
-      }
+      },
     ): Promise<ApiResponse<JourneyResult>> {
       return client.post<JourneyResult>('/reports/journey', params);
     },
@@ -155,7 +155,7 @@ export function createReportsEndpoints(client: ApiClient) {
       params: DateRangeParams & {
         websiteId: string;
         goals: { name: string; type: string; value: string }[];
-      }
+      },
     ): Promise<ApiResponse<GoalResult[]>> {
       return client.post<GoalResult[]>('/reports/goal', params);
     },
@@ -167,7 +167,7 @@ export function createReportsEndpoints(client: ApiClient) {
       params: DateRangeParams & {
         websiteId: string;
         model?: 'first-touch' | 'last-touch' | 'linear';
-      }
+      },
     ): Promise<ApiResponse<AttributionResult[]>> {
       return client.post<AttributionResult[]>('/reports/attribution', params);
     },
@@ -179,7 +179,7 @@ export function createReportsEndpoints(client: ApiClient) {
       params: DateRangeParams & {
         websiteId: string;
         currency?: string;
-      }
+      },
     ): Promise<ApiResponse<RevenueResult[]>> {
       return client.post<RevenueResult[]>('/reports/revenue', params);
     },
@@ -190,7 +190,7 @@ export function createReportsEndpoints(client: ApiClient) {
     runUTMReport(
       params: DateRangeParams & {
         websiteId: string;
-      }
+      },
     ): Promise<ApiResponse<UTMResult[]>> {
       return client.post<UTMResult[]>('/reports/utm', params);
     },
@@ -202,7 +202,7 @@ export function createReportsEndpoints(client: ApiClient) {
       params: DateRangeParams & {
         websiteId: string;
         fields: string[];
-      }
+      },
     ): Promise<ApiResponse<BreakdownResult[]>> {
       return client.post<BreakdownResult[]>('/reports/breakdown', params);
     },

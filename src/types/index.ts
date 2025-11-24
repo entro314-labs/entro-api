@@ -25,24 +25,48 @@ export interface DateRangeParams {
 // User Types
 // ============================================================================
 
+export type PlatformRole = 'admin' | 'user' | 'view-only';
+export type OrganizationRole = 'admin' | 'manager' | 'member' | 'view-only';
+
 export interface User {
   id: string;
-  username: string;
-  role: 'admin' | 'user' | 'view-only';
+  /** Clerk user ID (user_xxx format) */
+  clerkId: string;
+  /** Primary email address */
+  email: string;
+  /** Display name (computed from firstName + lastName or email) */
+  displayName: string;
+  /** First name from Clerk */
+  firstName?: string | null;
+  /** Last name from Clerk */
+  lastName?: string | null;
+  /** Profile image URL */
+  imageUrl?: string | null;
+  /** Platform-level role */
+  role: PlatformRole;
+  /** Whether user has admin privileges */
+  isAdmin: boolean;
+  /** Current organization ID (if in org context) */
+  orgId?: string | null;
+  /** Role within current organization */
+  orgRole?: OrganizationRole | null;
   createdAt: string;
-  isAdmin?: boolean;
+  updatedAt?: string | null;
+  /** @deprecated Use clerkId instead */
+  username?: string;
 }
 
 export interface CreateUserData {
-  username: string;
-  password: string;
-  role?: 'admin' | 'user' | 'view-only';
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  role?: PlatformRole;
 }
 
 export interface UpdateUserData {
-  username?: string;
-  password?: string;
-  role?: 'admin' | 'user' | 'view-only';
+  firstName?: string;
+  lastName?: string;
+  role?: PlatformRole;
 }
 
 // ============================================================================
@@ -67,7 +91,7 @@ export interface OrgUser {
   id: string;
   userId: string;
   orgId: string;
-  role: 'owner' | 'admin' | 'member' | 'view-only';
+  role: OrganizationRole;
   user: User;
   createdAt: string;
 }
@@ -341,4 +365,70 @@ export interface RealtimeData {
 export interface ActiveVisitor {
   x: string;
   y: number;
+}
+
+// ============================================================================
+// Board Types (Custom Dashboards)
+// ============================================================================
+
+export interface Board {
+  id: string;
+  userId: string;
+  orgId?: string;
+  websiteId: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BoardWidget {
+  id: string;
+  boardId: string;
+  title: string;
+  type: string;
+  parameters: Record<string, unknown>;
+  position: {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateBoardData {
+  websiteId: string;
+  name: string;
+  description?: string;
+}
+
+export interface UpdateBoardData {
+  name?: string;
+  description?: string;
+}
+
+export interface CreateBoardWidgetData {
+  title: string;
+  type: string;
+  parameters?: Record<string, unknown>;
+  position?: {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  };
+}
+
+export interface UpdateBoardWidgetData {
+  title?: string;
+  type?: string;
+  parameters?: Record<string, unknown>;
+  position?: {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  };
 }
