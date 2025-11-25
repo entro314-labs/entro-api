@@ -18,7 +18,7 @@
     "directory": "entro-api"
   },
   "bugs": {
-    "url": "https://github.com/entro314labs/entrolytics-system/issues"
+    "url": "https://github.com/entro314labs/entro-api/issues"
   },
   "type": "module",
   "main": "dist/index.cjs",
