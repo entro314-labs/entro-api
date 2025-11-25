@@ -1,7 +1,10 @@
 import { ApiClient, type ClientConfig } from './client';
 import {
+  createAdminEndpoints,
   createBoardsEndpoints,
+  createConfigEndpoints,
   createEventsEndpoints,
+  createIntegrationsEndpoints,
   createLinksEndpoints,
   createMeEndpoints,
   createOrgsEndpoints,
@@ -10,6 +13,7 @@ import {
   createSegmentsEndpoints,
   createSessionsEndpoints,
   createUsersEndpoints,
+  createWebhooksEndpoints,
   createWebsitesEndpoints,
 } from './endpoints';
 
@@ -139,6 +143,18 @@ export interface EntrolyticsClient {
   createBoardWidget: ReturnType<typeof createBoardsEndpoints>['createBoardWidget'];
   updateBoardWidget: ReturnType<typeof createBoardsEndpoints>['updateBoardWidget'];
   deleteBoardWidget: ReturnType<typeof createBoardsEndpoints>['deleteBoardWidget'];
+
+  // Config endpoints
+  getConfig: ReturnType<typeof createConfigEndpoints>['get'];
+
+  // Admin endpoints (admin only)
+  admin: ReturnType<typeof createAdminEndpoints>;
+
+  // Webhook endpoints
+  webhooks: ReturnType<typeof createWebhooksEndpoints>;
+
+  // Integration endpoints
+  integrations: ReturnType<typeof createIntegrationsEndpoints>;
 }
 
 /**
@@ -162,6 +178,8 @@ export interface EntrolyticsClient {
 export function getClient(config?: ClientConfig): EntrolyticsClient {
   const apiClient = new ApiClient(config);
 
+  const admin = createAdminEndpoints(apiClient);
+  const config_endpoints = createConfigEndpoints(apiClient);
   const me = createMeEndpoints(apiClient);
   const users = createUsersEndpoints(apiClient);
   const orgs = createOrgsEndpoints(apiClient);
@@ -173,6 +191,8 @@ export function getClient(config?: ClientConfig): EntrolyticsClient {
   const links = createLinksEndpoints(apiClient);
   const pixels = createPixelsEndpoints(apiClient);
   const boards = createBoardsEndpoints(apiClient);
+  const webhooks = createWebhooksEndpoints(apiClient);
+  const integrations = createIntegrationsEndpoints(apiClient);
 
   return {
     // Me
@@ -197,13 +217,24 @@ export function getClient(config?: ClientConfig): EntrolyticsClient {
     ...pixels,
     // Boards
     ...boards,
+    // Config
+    getConfig: config_endpoints.get,
+    // Admin
+    admin,
+    // Webhooks
+    webhooks,
+    // Integrations
+    integrations,
   };
 }
 
 // Also export individual endpoint creators for advanced usage
 export {
+  createAdminEndpoints,
   createBoardsEndpoints,
+  createConfigEndpoints,
   createEventsEndpoints,
+  createIntegrationsEndpoints,
   createLinksEndpoints,
   createMeEndpoints,
   createOrgsEndpoints,
@@ -212,6 +243,7 @@ export {
   createSegmentsEndpoints,
   createSessionsEndpoints,
   createUsersEndpoints,
+  createWebhooksEndpoints,
   createWebsitesEndpoints,
 };
 

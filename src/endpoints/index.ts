@@ -1,5 +1,8 @@
+export { createAdminEndpoints } from './admin';
 export { createBoardsEndpoints } from './boards';
+export { createConfigEndpoints } from './config';
 export { createEventsEndpoints } from './events';
+export { createIntegrationsEndpoints } from './integrations';
 export { createLinksEndpoints } from './links';
 export { createMeEndpoints } from './me';
 export { createOrgsEndpoints } from './orgs';
@@ -8,4 +11,5 @@ export { createReportsEndpoints } from './reports';
 export { createSegmentsEndpoints } from './segments';
 export { createSessionsEndpoints } from './sessions';
 export { createUsersEndpoints } from './users';
+export { createWebhooksEndpoints } from './webhooks';
 export { createWebsitesEndpoints } from './websites';
