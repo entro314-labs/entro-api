@@ -51,6 +51,9 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },
+  "dependencies": {
+    "@entro314labs/shared-constants": "^1.0.3"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
     "@types/node": "^24.10.1",

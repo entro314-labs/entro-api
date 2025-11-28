@@ -1,6 +1,7 @@
 import { ApiClient, type ClientConfig } from './client';
 import {
   createAdminEndpoints,
+  createAuthEndpoints,
   createBoardsEndpoints,
   createConfigEndpoints,
   createEventsEndpoints,
@@ -24,6 +25,9 @@ export * from './types';
  * Entrolytics API client with all endpoints.
  */
 export interface EntrolyticsClient {
+  // Auth endpoints (CLI token management)
+  auth: ReturnType<typeof createAuthEndpoints>;
+
   // Me endpoints
   getMe: ReturnType<typeof createMeEndpoints>['getMe'];
   updateMyPassword: ReturnType<typeof createMeEndpoints>['updateMyPassword'];
@@ -179,6 +183,7 @@ export function getClient(config?: ClientConfig): EntrolyticsClient {
   const apiClient = new ApiClient(config);
 
   const admin = createAdminEndpoints(apiClient);
+  const auth = createAuthEndpoints(apiClient);
   const config_endpoints = createConfigEndpoints(apiClient);
   const me = createMeEndpoints(apiClient);
   const users = createUsersEndpoints(apiClient);
@@ -195,6 +200,8 @@ export function getClient(config?: ClientConfig): EntrolyticsClient {
   const integrations = createIntegrationsEndpoints(apiClient);
 
   return {
+    // Auth
+    auth,
     // Me
     ...me,
     // Users
@@ -231,6 +238,7 @@ export function getClient(config?: ClientConfig): EntrolyticsClient {
 // Also export individual endpoint creators for advanced usage
 export {
   createAdminEndpoints,
+  createAuthEndpoints,
   createBoardsEndpoints,
   createConfigEndpoints,
   createEventsEndpoints,
