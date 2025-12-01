@@ -1,5 +1,6 @@
 export { createAdminEndpoints } from './admin';
 export { createAuthEndpoints } from './auth';
+export { createBillingEndpoints } from './billing';
 export { createBoardsEndpoints } from './boards';
 export { createConfigEndpoints } from './config';
 export { createEventsEndpoints } from './events';

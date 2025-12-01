@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@entro314labs/shared-constants':
-        specifier: ^1.0.3
-        version: 1.0.3
+        specifier: ^1.1.1
+        version: 1.1.1
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.8
@@ -80,8 +80,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@entro314labs/shared-constants@1.0.3':
-    resolution: {integrity: sha512-ZuFkdHMAmUHrEJCQEqQhV30b8dGMEdb6lIVp6np7AEDM8Etc5wdfLh/fxhaIzea0bYLB27ZrhQn8hK2aMUvIzg==}
+  '@entro314labs/shared-constants@1.1.1':
+    resolution: {integrity: sha512-jJKIInPpzLO+/fjXJUM5ZRsPQsdXM08hJEue3P25B81LnTfP80/sf9GuZEdjpQS9PYwDmFb5xIZiqI2XhtxNYg==}
     engines: {node: '>=22.0.0'}
 
   '@esbuild/aix-ppc64@0.27.0':
@@ -609,7 +609,7 @@ snapshots:
   '@biomejs/cli-win32-x64@2.3.8':
     optional: true
 
-  '@entro314labs/shared-constants@1.0.3': {}
+  '@entro314labs/shared-constants@1.1.1': {}
 
   '@esbuild/aix-ppc64@0.27.0':
     optional: true

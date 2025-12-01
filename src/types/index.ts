@@ -432,3 +432,88 @@ export interface UpdateBoardWidgetData {
     h: number;
   };
 }
+
+// ============================================================================
+// Billing Types
+// ============================================================================
+
+export type PlanId = 'starter' | 'pro' | 'business' | 'enterprise';
+
+export interface AccountUsage {
+  /** Current billing period start date (ISO string) */
+  periodStart: string;
+  /** Current billing period end date (ISO string) */
+  periodEnd: string;
+  /** Number of pageviews recorded this period */
+  pageviews: number;
+  /** Number of custom events recorded this period */
+  events: number;
+  /** Number of websites currently active */
+  websites: number;
+  /** Number of team members (for org accounts) */
+  teamMembers: number;
+}
+
+export interface AccountEntitlements {
+  /** User's current plan */
+  plan: PlanId;
+  /** Maximum pageviews per month */
+  maxPageviews: number;
+  /** Maximum custom events per month */
+  maxEvents: number;
+  /** Maximum websites allowed */
+  maxWebsites: number;
+  /** Maximum team members allowed */
+  maxTeamMembers: number;
+  /** Data retention period in months */
+  dataRetentionMonths: number;
+  /** Feature flags */
+  features: {
+    customDomains: boolean;
+    apiAccess: boolean;
+    webhooks: boolean;
+    advancedReports: boolean;
+    exportData: boolean;
+    whiteLabel: boolean;
+    prioritySupport: boolean;
+    sla: boolean;
+  };
+}
+
+export interface Subscription {
+  /** Subscription ID */
+  id: string;
+  /** Current plan */
+  plan: PlanId;
+  /** Subscription status */
+  status: 'active' | 'past_due' | 'canceled' | 'trialing' | 'incomplete';
+  /** Current billing period start */
+  currentPeriodStart: string;
+  /** Current billing period end */
+  currentPeriodEnd: string;
+  /** Whether subscription will cancel at period end */
+  cancelAtPeriodEnd: boolean;
+  /** Trial end date (if trialing) */
+  trialEnd?: string;
+}
+
+export interface CheckoutOptions {
+  /** Plan to checkout */
+  plan: PlanId;
+  /** Billing interval */
+  interval?: 'month' | 'year';
+  /** Success redirect URL */
+  successUrl?: string;
+  /** Cancel redirect URL */
+  cancelUrl?: string;
+}
+
+export interface CheckoutResponse {
+  /** Stripe checkout URL */
+  url: string;
+}
+
+export interface PortalResponse {
+  /** Stripe customer portal URL */
+  url: string;
+}

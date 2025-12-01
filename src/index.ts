@@ -2,6 +2,7 @@ import { ApiClient, type ClientConfig } from './client';
 import {
   createAdminEndpoints,
   createAuthEndpoints,
+  createBillingEndpoints,
   createBoardsEndpoints,
   createConfigEndpoints,
   createEventsEndpoints,
@@ -159,6 +160,9 @@ export interface EntrolyticsClient {
 
   // Integration endpoints
   integrations: ReturnType<typeof createIntegrationsEndpoints>;
+
+  // Billing endpoints
+  billing: ReturnType<typeof createBillingEndpoints>;
 }
 
 /**
@@ -184,6 +188,7 @@ export function getClient(config?: ClientConfig): EntrolyticsClient {
 
   const admin = createAdminEndpoints(apiClient);
   const auth = createAuthEndpoints(apiClient);
+  const billing = createBillingEndpoints(apiClient);
   const config_endpoints = createConfigEndpoints(apiClient);
   const me = createMeEndpoints(apiClient);
   const users = createUsersEndpoints(apiClient);
@@ -232,6 +237,8 @@ export function getClient(config?: ClientConfig): EntrolyticsClient {
     webhooks,
     // Integrations
     integrations,
+    // Billing
+    billing,
   };
 }
 
@@ -239,6 +246,7 @@ export function getClient(config?: ClientConfig): EntrolyticsClient {
 export {
   createAdminEndpoints,
   createAuthEndpoints,
+  createBillingEndpoints,
   createBoardsEndpoints,
   createConfigEndpoints,
   createEventsEndpoints,
