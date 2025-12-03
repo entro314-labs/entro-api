@@ -47,6 +47,7 @@ export type Runtime = 'node' | 'edge' | 'unknown';
 export function detectRuntime(): Runtime {
   // Check for Edge Runtime indicators
   if (
+    // @ts-ignore - Edge Runtime global
     typeof EdgeRuntime !== 'undefined' ||
     // @ts-ignore - Vercel Edge Runtime
     globalThis.EdgeRuntime !== undefined ||
