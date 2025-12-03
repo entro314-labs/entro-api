@@ -170,5 +170,39 @@ export function createWebsitesEndpoints(client: ApiClient) {
     ): Promise<ApiResponse<string>> {
       return client.get<string>(`/websites/${websiteId}/export`, params);
     },
+
+    /**
+     * Get website ingest mode configuration.
+     */
+    getWebsiteMode(websiteId: string): Promise<ApiResponse<import('../types').WebsiteModeConfig>> {
+      return client.get<import('../types').WebsiteModeConfig>(`/websites/${websiteId}/mode`);
+    },
+
+    /**
+     * Set website ingest mode (auto, node, or edge).
+     */
+    setWebsiteMode(
+      websiteId: string,
+      mode: import('../types').IngestMode
+    ): Promise<ApiResponse<{ message: string }>> {
+      return client.post<{ message: string }>(`/websites/${websiteId}/mode`, { ingestMode: mode });
+    },
+
+    /**
+     * Get routing health status.
+     */
+    getRoutingHealth(): Promise<ApiResponse<import('../types').RoutingHealth>> {
+      return client.get<import('../types').RoutingHealth>('/health/routing');
+    },
+
+    /**
+     * Get routing statistics.
+     */
+    getRoutingStats(params?: {
+      start?: string;
+      end?: string;
+    }): Promise<ApiResponse<import('../types').RoutingStats>> {
+      return client.get<import('../types').RoutingStats>('/routing/stats', params);
+    },
   };
 }

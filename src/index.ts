@@ -266,5 +266,27 @@ export {
 // Export the base client for custom implementations
 export { ApiClient };
 
+// Export runtime detection utilities
+export {
+  detectRuntime,
+  isNodeRuntime,
+  isEdgeRuntime,
+  getRuntimeCapabilities,
+  assertRuntime,
+  type Runtime,
+} from './runtime';
+
+// Export edge helpers
+export {
+  getEdgeEnv,
+  requireEdgeEnv,
+  createEdgeFetch,
+  getRegionInfo,
+  getGeoFromRequest,
+  getClientIp,
+  type EdgeFetchOptions,
+  type RegionInfo,
+} from './edge-helpers';
+
 // Default export for convenience
 export default getClient;

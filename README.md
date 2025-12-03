@@ -275,6 +275,138 @@ const properties = await client.getEventDataFields('website-id', {
 });
 ```
 
+## Edge Runtime Support
+
+The package is fully compatible with edge runtimes (Vercel Edge, Netlify Edge Functions, Cloudflare Workers) with zero configuration.
+
+### Runtime Detection
+
+```typescript
+import { detectRuntime, isEdgeRuntime, getRuntimeCapabilities } from '@entro314labs/entro-api';
+
+// Detect current runtime
+const runtime = detectRuntime();
+console.log(runtime); // 'node' | 'edge' | 'unknown'
+
+// Check if running in edge
+if (isEdgeRuntime()) {
+  console.log('Running in edge runtime - optimized for low latency!');
+}
+
+// Get runtime capabilities
+const capabilities = getRuntimeCapabilities();
+console.log('Supports Web Crypto:', capabilities.supportsWebCrypto);
+console.log('Supports File System:', capabilities.supportsFileSystem);
+```
+
+### Edge-Compatible Environment Variables
+
+```typescript
+import { getEdgeEnv, requireEdgeEnv } from '@entro314labs/entro-api';
+
+// Safe env access with fallback
+const apiKey = getEdgeEnv('API_KEY', 'default-key');
+
+// Require env (throws if missing)
+const dbUrl = requireEdgeEnv('DATABASE_URL');
+```
+
+### Edge Fetch with Retries
+
+```typescript
+import { createEdgeFetch } from '@entro314labs/entro-api';
+
+// Create a fetch wrapper with automatic retries
+const edgeFetch = createEdgeFetch({
+  retries: 3,
+  retryDelay: 1000,
+  timeout: 10000,
+});
+
+// Use it in your edge function
+export const runtime = 'edge';
+
+export async function GET(request: Request) {
+  const response = await edgeFetch('https://api.example.com/data');
+  return Response.json(await response.json());
+}
+```
+
+### Get Deployment Region Information
+
+```typescript
+import { getRegionInfo } from '@entro314labs/entro-api';
+
+export async function GET(request: Request) {
+  const region = getRegionInfo();
+
+  return Response.json({
+    provider: region.provider, // 'vercel' | 'netlify' | 'cloudflare'
+    region: region.region,     // e.g., 'iad1', 'us-east-1'
+    isEdge: region.isEdge,    // true if running in edge runtime
+  });
+}
+```
+
+### Extract Geo Data from Requests
+
+```typescript
+import { getGeoFromRequest, getClientIp } from '@entro314labs/entro-api';
+
+export const runtime = 'edge';
+
+export async function POST(request: Request) {
+  // Get geo information from edge headers
+  const geo = getGeoFromRequest(request);
+  console.log(`Request from: ${geo.country}, ${geo.city}`);
+
+  // Get client IP
+  const clientIp = getClientIp(request);
+  console.log(`Client IP: ${clientIp}`);
+
+  return Response.json({ geo, clientIp });
+}
+```
+
+### Complete Edge Example
+
+```typescript
+import {
+  getClient,
+  isEdgeRuntime,
+  getEdgeEnv,
+  createEdgeFetch,
+  getGeoFromRequest,
+} from '@entro314labs/entro-api';
+
+export const runtime = 'edge';
+
+const client = getClient({
+  endpoint: getEdgeEnv('ENTROLYTICS_API_ENDPOINT')!,
+  apiKey: getEdgeEnv('ENTROLYTICS_API_KEY')!,
+  fetch: createEdgeFetch({ retries: 3, timeout: 5000 }),
+});
+
+export async function POST(request: Request) {
+  // Verify we're in edge runtime
+  if (!isEdgeRuntime()) {
+    return Response.json({ error: 'Must run in edge runtime' }, { status: 500 });
+  }
+
+  // Extract geo data
+  const geo = getGeoFromRequest(request);
+
+  // Track event with geo data
+  const { ok, data } = await client.track({
+    websiteId: 'your-website-id',
+    url: '/',
+    geo,
+  });
+
+  return Response.json({ ok, data });
+}
+```
+
 ## TypeScript Support
 
 The package includes full TypeScript support with type definitions for all API responses.
@@ -287,6 +419,9 @@ import type {
   EventData,
   Report,
   ApiResponse,
+  Runtime,
+  RegionInfo,
+  EdgeFetchOptions,
 } from '@entro314labs/entro-api';
 ```
 

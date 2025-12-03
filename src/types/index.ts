@@ -517,3 +517,59 @@ export interface PortalResponse {
   /** Stripe customer portal URL */
   url: string;
 }
+
+// ============================================================================
+// Routing Types
+// ============================================================================
+
+/**
+ * Website ingest mode configuration
+ */
+export type IngestMode = 'auto' | 'node' | 'edge';
+
+export interface WebsiteModeConfig {
+  ingestMode: IngestMode;
+}
+
+/**
+ * Routing health status
+ */
+export interface RoutingHealth {
+  status: 'ok' | 'degraded' | 'error';
+  edge: {
+    healthy: boolean;
+    latency: number;
+  };
+  node: {
+    healthy: boolean;
+    latency: number;
+  };
+  timestamp: string;
+}
+
+/**
+ * Routing statistics
+ */
+export interface RoutingStats {
+  period: {
+    start: string;
+    end: string;
+  };
+  requests: {
+    total: number;
+    edge: number;
+    node: number;
+  };
+  latency: {
+    edge: {
+      p50: number;
+      p95: number;
+      p99: number;
+    };
+    node: {
+      p50: number;
+      p95: number;
+      p99: number;
+    };
+  };
+}

@@ -1,6 +1,6 @@
 {
   "name": "@entro314labs/entro-api",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "API client for Entrolytics analytics platform",
   "keywords": [
     "analytics",
@@ -38,7 +38,7 @@
   ],
   "sideEffects": false,
   "engines": {
-    "node": ">=22.x"
+    "node": ">=18.x"
   },
   "publishConfig": {
     "access": "public"

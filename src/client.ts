@@ -42,11 +42,19 @@ export class ApiClient {
   private retryDelay: number;
 
   constructor(config: ClientConfig = {}) {
-    this.endpoint = config.endpoint || process.env.ENTROLYTICS_API_ENDPOINT || '';
-    this.bearerToken = config.bearerToken || process.env.ENTROLYTICS_BEARER_TOKEN;
-    this.apiKey = config.apiKey || process.env.ENTROLYTICS_API_KEY;
-    this.userId = config.userId || process.env.ENTROLYTICS_USER_ID;
-    this.secret = config.secret || process.env.ENTROLYTICS_SECRET;
+    // Helper to safely access process.env (edge runtime compatible)
+    const getEnv = (key: string): string | undefined => {
+      if (typeof process !== 'undefined' && process.env) {
+        return process.env[key];
+      }
+      return undefined;
+    };
+
+    this.endpoint = config.endpoint || getEnv('ENTROLYTICS_API_ENDPOINT') || '';
+    this.bearerToken = config.bearerToken || getEnv('ENTROLYTICS_BEARER_TOKEN');
+    this.apiKey = config.apiKey || getEnv('ENTROLYTICS_API_KEY');
+    this.userId = config.userId || getEnv('ENTROLYTICS_USER_ID');
+    this.secret = config.secret || getEnv('ENTROLYTICS_SECRET');
     this.fetchFn = config.fetch || globalThis.fetch;
     this.retries = config.retries ?? 3;
     this.retryDelay = config.retryDelay ?? 1000;
@@ -102,7 +110,14 @@ export class ApiClient {
       timestamp: Date.now(),
     };
 
-    return Buffer.from(JSON.stringify(payload)).toString('base64');
+    // Edge-compatible base64 encoding (use btoa instead of Buffer)
+    if (typeof Buffer !== 'undefined') {
+      // Node.js environment
+      return Buffer.from(JSON.stringify(payload)).toString('base64');
+    } else {
+      // Edge/Browser environment
+      return btoa(JSON.stringify(payload));
+    }
   }
 
   /**
